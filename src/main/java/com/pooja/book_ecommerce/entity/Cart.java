@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Data
 public class Cart {
 
     @Id
@@ -20,37 +21,6 @@ public class Cart {
     @OneToOne(cascade = CascadeType.ALL)
     private Customer customer;
 
-    public Cart(){
-    }
-
-    public Cart(List<CartItem> items, Customer customer) {
-        this.items = items;
-        this.customer = customer;
-    }
-
-    public Long getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
-    }
-
-    public List<CartItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<CartItem> items) {
-        this.items = items;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 
     public void addItem(CartItem item) {
         items.add(item);

@@ -44,11 +44,14 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
-
     public Customer update(Long id, Customer customer) {
         Optional<Customer> tempCustomer = customerRepository.findById(id);
         if(tempCustomer.isPresent()){
-            Customer savedCustomer= customerRepository.save(customer);
+            Customer existingCustomer=tempCustomer.get();
+            existingCustomer.setName(customer.getName());
+            existingCustomer.setEmail(customer.getEmail());
+            existingCustomer.setPhone(customer.getPhone());
+            Customer savedCustomer= customerRepository.save(existingCustomer);
             return savedCustomer;
         }
         else

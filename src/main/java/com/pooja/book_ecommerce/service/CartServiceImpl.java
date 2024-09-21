@@ -34,26 +34,26 @@ public class CartServiceImpl implements CartService{
         this.cartItemRepository=cartItemRepository;
     }
 
-    public BookCartDTO addToCart(Long customerId, Long bookId, Integer quantity) {
+    public BookCartDTO addToCart(Long customerId, CartDTO cartDTO) {
         Optional<Customer> customer=customerRepository.findById(customerId);
         if(customer.isEmpty()){
             throw  new CustomerNotFoundException("Customer not found");
         }
-        Optional<Book> book=bookRepository.findById(bookId);
+        Optional<Book> book=bookRepository.findById(cartDTO.getBookId());
         if(book.isEmpty()){
             throw new BookNotFoundException("Book not found");
         }
-        if(book.get().getQuantity()<quantity){
+        if(book.get().getQuantity()< cartDTO.getQuantity()){
             throw new BookNotFoundException("Book ran out of stock");
         }
         Boolean flag=true;
         BookCartDTO bookCartDTO=new BookCartDTO();
         Cart cart=cartRepository.findByCustomer_CustomerId(customerId);
         List<CartItem> cartItems=cart.getItems();
-        if(cartItems.size()>0){
+        if(!cartItems.isEmpty()){
             for(CartItem item:cartItems){
-                if(item.getBook().getBookId()==bookId){
-                    item.setQuantity(item.getQuantity()+quantity);
+                if(item.getBook().getBookId()==cartDTO.getBookId()){
+                    item.setQuantity(item.getQuantity()+ cartDTO.getQuantity());
                     cartItemRepository.save(item);
                     flag=false;
                     bookCartDTO=new BookCartDTO(book.get().getTitle(),item.getQuantity());
@@ -61,13 +61,13 @@ public class CartServiceImpl implements CartService{
                 }
             }}
         if(flag) {
-            CartItem cartItem = new CartItem(cart, book.get(), quantity);
+            CartItem cartItem = new CartItem(cart, book.get(), cartDTO.getQuantity());
             cart.addItem(cartItem);
             cartRepository.save(cart);
-            bookCartDTO=new BookCartDTO(book.get().getTitle(),quantity);
+            bookCartDTO=new BookCartDTO(book.get().getTitle(),cartDTO.getQuantity());
 
         }
-        book.get().setQuantity(book.get().getQuantity()-quantity);
+        book.get().setQuantity(book.get().getQuantity()-cartDTO.getQuantity());
         bookRepository.save(book.get());
         return bookCartDTO;
     }
@@ -110,12 +110,12 @@ public class CartServiceImpl implements CartService{
     }
 
 
-    public BookCartDTO updateQuantity(Long customerId, Long bookId, Integer quantity) {
+    public BookCartDTO updateQuantity(Long customerId, CartDTO cartDTO) {
         Optional<Customer> customer=customerRepository.findById(customerId);
         if(customer.isEmpty()){
             throw  new CustomerNotFoundException("Customer not found");
         }
-        Optional<Book> book=bookRepository.findById(bookId);
+        Optional<Book> book=bookRepository.findById(cartDTO.getBookId());
         if(book.isEmpty()){
             throw new BookNotFoundException("Book not found");
         }
@@ -125,12 +125,12 @@ public class CartServiceImpl implements CartService{
         Boolean flag=true;
         BookCartDTO bookCartDTO=new BookCartDTO();
         for(CartItem item:cartItems){
-            if(item.getBook().getBookId()==bookId){
+            if(item.getBook().getBookId()==cartDTO.getBookId()){
                 book.get().setQuantity(book.get().getQuantity()+ item.getQuantity());
-                if(book.get().getQuantity()<quantity){
+                if(book.get().getQuantity()<cartDTO.getQuantity()){
                     throw new BookNotFoundException("Book ran out of stock");
                 }
-                item.setQuantity(quantity);
+                item.setQuantity(cartDTO.getQuantity());
                 cartItemRepository.save(item);
                 flag=false;
                 bookCartDTO=new BookCartDTO(book.get().getTitle(),item.getQuantity());
@@ -141,7 +141,7 @@ public class CartServiceImpl implements CartService{
             throw new BookNotFoundException("Book not found in the cart");
         }
 
-        book.get().setQuantity(book.get().getQuantity()-quantity);
+        book.get().setQuantity(book.get().getQuantity()-cartDTO.getQuantity());
         bookRepository.save(book.get());
         return bookCartDTO;
 

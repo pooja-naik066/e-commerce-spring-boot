@@ -2,6 +2,7 @@ package com.pooja.book_ecommerce.controller;
 
 import com.pooja.book_ecommerce.entity.BookCartDTO;
 import com.pooja.book_ecommerce.entity.Cart;
+import com.pooja.book_ecommerce.entity.CartDTO;
 import com.pooja.book_ecommerce.entity.CartItem;
 import com.pooja.book_ecommerce.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,11 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/add/{bookId}/quantity/{quantity}")
+    @PostMapping()
     public ResponseEntity<BookCartDTO> addBookToCart(@PathVariable Long customerId,
-                                              @PathVariable Long bookId,
-                                              @PathVariable Integer quantity){
-        BookCartDTO bookCartDTO=cartService.addToCart(customerId,bookId,quantity);
-        return new ResponseEntity<BookCartDTO>(bookCartDTO, HttpStatus.OK);
+                                             @RequestBody CartDTO cartDTO){
+        BookCartDTO savedCart=cartService.addToCart(customerId,cartDTO);
+        return new ResponseEntity<BookCartDTO>(savedCart, HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{bookId}")
@@ -41,12 +41,11 @@ public class CartController {
         return cartService.getCartByCustomerId(customerId);
     }
 
-    @PutMapping("/update/{bookId}/quantity/{quantity}")
+    @PutMapping
     public ResponseEntity<BookCartDTO> updateQuantity(@PathVariable Long customerId,
-                                                      @PathVariable Long bookId,
-                                                      @PathVariable Integer quantity){
+                                                     @RequestBody CartDTO  cartDTO){
 
-        BookCartDTO bookCartDTO=cartService.updateQuantity(customerId,bookId,quantity);
+        BookCartDTO bookCartDTO=cartService.updateQuantity(customerId,cartDTO);
         return new ResponseEntity<BookCartDTO>(bookCartDTO, HttpStatus.OK);
 
     }

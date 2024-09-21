@@ -40,7 +40,14 @@ public class BookServiceImpl implements BookService {
     public Book update(Long id, Book book) {
         Optional<Book> tempBook= bookRepository.findById(id);
         if(tempBook.isPresent()){
-            Book savedBook =bookRepository.save(book);
+            Book existingBook=tempBook.get();
+            existingBook.setTitle(book.getTitle());
+            existingBook.setAuthor(book.getAuthor());
+            existingBook.setGenre(book.getGenre());
+            existingBook.setDescription(book.getDescription());
+            existingBook.setPrice(book.getPrice());
+            existingBook.setQuantity(book.getQuantity());
+            Book savedBook =bookRepository.save(existingBook);
             return savedBook;
         }
         else

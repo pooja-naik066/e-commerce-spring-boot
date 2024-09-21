@@ -9,32 +9,10 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Embeddable
+@Data
 public class CartItemId implements Serializable {
 
     private Long cartId;
     private Long bookId;
 
-    public CartItemId() {
-    }
-
-    public CartItemId(Long bookId, Long cartId) {
-        this.bookId=bookId;
-        this.cartId=cartId;
-    }
-
-    public Long getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
-    }
-
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
-    }
 }
