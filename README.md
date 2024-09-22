@@ -108,11 +108,11 @@ Description : Retrieve the cart of a specific customer <br>
 DELETE <code>/carts/{customerId}/remove/{bookId}</code> <br>
 Description :  Remove a specific book from the customer's cart <br>
 <hr>
-<h6>Order Endpoints</h6>
-POST <code>/orders/{customerId}</code>
+<h6>Order Endpoints</h6> <br>
+POST <code>/orders/{customerId}</code> <br>
 Description : Place an order for all items in the customer's cart
 <hr>
-GET <code>/orders/{customerId}</code>
+GET <code>/orders/{customerId}</code> <br>
 Description : Retrieve all orders placed by a specific customer
 
 
